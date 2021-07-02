@@ -1,13 +1,16 @@
 package com.compassouol.sprint3.controller;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -33,7 +37,7 @@ public class CarroController {
 	@Autowired
 	private CarroRepository carroRepository;
 	
-	//Salva carro
+	//Cadastrar novo carro
 	@PostMapping("/cars")
 	@Transactional
 	public ResponseEntity<CarroDto> cadastrar(@RequestBody @Valid CarroForm form, UriComponentsBuilder uriBuilder) {
@@ -45,13 +49,13 @@ public class CarroController {
 	}
 	
 	//Lista todos os carros
-	@GetMapping("/cars")
-	public List<CarroDto> listar() {
-		List<Carro> carros = carroRepository.findAll();
-		return CarroDto.converter(carros);
-	}
+//	@GetMapping("/cars")
+//	public List<CarroDto> listar() {
+//		List<Carro> carros = carroRepository.findAll();
+//		return CarroDto.converter(carros);
+//	}
 	
-	//Detalha carro por id
+	//Detalhar carro por id
 	@GetMapping("/cars/{id}")
 	public ResponseEntity<DetalhesDoCarroDto> detalhar(@PathVariable Long id) {
 		Optional<Carro> carro = carroRepository.findById(id);
@@ -61,7 +65,7 @@ public class CarroController {
 		return ResponseEntity.notFound().build();
 	}
 	
-	//Atualiza valor de um carro
+	//Atualizar valor de um carro
 	@PutMapping("/cars/{id}")
 	@Transactional
 	public ResponseEntity<CarroDto> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizacaoCarroForm form) {
@@ -83,5 +87,20 @@ public class CarroController {
 			return ResponseEntity.ok().build();
 		}
 		return ResponseEntity.notFound().build();	
+	}
+	
+	// Ordenação e filtros
+	
+	@GetMapping("/cars")
+	public Page<CarroDto> listar(@RequestParam(required = false) String marca,
+								 @PageableDefault(sort = "nome", direction = Direction.ASC, page = 0, size = 15) Pageable paginacao) {
+		
+		if (marca == null) {
+			Page<Carro> carros = carroRepository.findAll(paginacao);
+			return CarroDto.converter(carros);
+		} else {
+			Page<Carro> carros = carroRepository.findByMarca(marca, paginacao);
+			return CarroDto.converter(carros);
+		}
 	}
 }

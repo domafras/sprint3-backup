@@ -25,7 +25,7 @@ public class CarroForm {
 	@NotNull @NotEmpty @Length(max = 15)
 	private String cor;
 	
-	@NotNull @Digits(integer=5,fraction=2,message="Apenas milhar e 2 casas após o ponto.")	
+	@NotNull @Digits(integer=6,fraction=2,message="Apenas milhar e 2 casas após o ponto.")	
 	private BigDecimal valor;
 	
 	@NotNull
