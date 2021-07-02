@@ -1,6 +1,5 @@
 package com.compassouol.sprint3.controller;
 
-import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
@@ -10,8 +9,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
@@ -23,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -55,13 +51,6 @@ public class CarroController {
 			return null;
 		}	
 	}
-	
-	//Lista todos os carros
-//	@GetMapping("/cars")
-//	public List<CarroDto> listar() {
-//		List<Carro> carros = carroRepository.findAll();
-//		return CarroDto.converter(carros);
-//	}
 	
 	//Detalhar carro por id
 	@GetMapping("/cars/{id}")
@@ -96,36 +85,15 @@ public class CarroController {
 		}
 		return ResponseEntity.notFound().build();	
 	}
+		
+	//Listar, ordenar e filtrar
+	//Paginação simples, com parâmetros, paginação default e query dinâmica
+	@GetMapping(value = "/cars")
+	public List<CarroDto> paginacaoComParametrosEOrdenacao(CarroForm carroForm, @PageableDefault(direction = Direction.ASC, page = 0, size = 20) Pageable pageable) {
+		Collection<Carro> carros = (Collection<Carro>) carroRepository.findAll(carroForm.toSpec(), pageable).getContent();
+		return CarroDto.converter(carros);
+	}
 	
-	// Ordenação e filtros
-	
-//	@GetMapping("/cars")
-//	public Page<CarroDto> listar(@RequestParam(required = false) String marca,
-//								 @RequestParam(required = false) String nome,
-//								 @RequestParam(required = false) String cor,
-//								 @RequestParam(required = false) Integer ano,
-//								 @PageableDefault(sort = "nome", direction = Direction.ASC, page = 0, size = 15) Pageable paginacao) {
-//		
-//		if (marca == null & nome == null & cor == null & ano == null) {
-//			Page<Carro> carros = carroRepository.findAll(paginacao);
-//			return CarroDto.converter(carros);
-//		} else if (marca != null) {
-//			Page<Carro> carros = carroRepository.findByMarca(marca, paginacao);
-//			return CarroDto.converter(carros);
-//		} else if (nome != null) {
-//			Page<Carro> carros = carroRepository.findByNome(nome, paginacao);
-//			return CarroDto.converter(carros);
-//		} else if (cor != null) {
-//			Page<Carro> carros = carroRepository.findByCor(cor, paginacao);
-//			return CarroDto.converter(carros);
-//		} else if (ano != null) {
-//			Page<Carro> carros = carroRepository.findByAno(ano, paginacao);
-//			return CarroDto.converter(carros);
-//		} else {
-//			return null;
-//		}
-//	}
-//
 //	@GetMapping("/cars/barato")
 //	public BigDecimal min() {
 //		return carroRepository.min();
@@ -135,16 +103,5 @@ public class CarroController {
 //	public BigDecimal max() {
 //		return carroRepository.max();
 //	}
-	
-	///////////////////////////////////////////
-	
-	//Listar, ordenar e filtrar
-	//Paginação simples, com parâmetros, paginação default e query dinâmica
-	
-	@GetMapping(value = "/cars")
-	public List<CarroDto> paginacaoComParametrosEOrdenacao(CarroForm carroForm, @PageableDefault(direction = Direction.ASC, page = 0, size = 20) Pageable pageable) {
-		Collection<Carro> carros = (Collection<Carro>) carroRepository.findAll(carroForm.toSpec(), pageable).getContent();
-		return CarroDto.converter(carros);
-	}
 	
 }

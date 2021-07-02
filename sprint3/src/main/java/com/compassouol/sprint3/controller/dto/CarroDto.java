@@ -4,9 +4,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Page;
-
 import com.compassouol.sprint3.model.Carro;
 
 public class CarroDto {
