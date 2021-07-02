@@ -37,15 +37,21 @@ public class CarroController {
 	@Autowired
 	private CarroRepository carroRepository;
 	
-	//Cadastrar novo carro
+	//Cadastrar novo carro + validação chassi único
 	@PostMapping("/cars")
 	@Transactional
 	public ResponseEntity<CarroDto> cadastrar(@RequestBody @Valid CarroForm form, UriComponentsBuilder uriBuilder) {
 		Carro carro = form.converter(carroRepository);
-		carroRepository.save(carro);
-		
-		URI uri = uriBuilder.path("/api/cars/{id}").buildAndExpand(carro.getId()).toUri();
-		return ResponseEntity.created(uri).body(new CarroDto(carro));
+		if (carro != null) {
+			carroRepository.save(carro);
+			
+			URI uri = uriBuilder.path("/api/cars/{id}").buildAndExpand(carro.getId()).toUri();
+			return ResponseEntity.created(uri).body(new CarroDto(carro));
+			
+		} else {
+			System.out.println("Chassi já cadastrado, este valor deve ser único.");
+			return null;
+		}	
 	}
 	
 	//Lista todos os carros

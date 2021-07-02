@@ -13,7 +13,7 @@ import com.compassouol.sprint3.repository.CarroRepository;
 
 public class CarroForm {
 
-	@NotNull @NotEmpty @Length(max = 18, min = 18)
+	@NotNull @NotEmpty @Length(max = 18, min = 18, message="Devem ser 18 caracteres em maiúsculos")
 	private String chassi;
 	
 	@NotNull @NotEmpty @Length(max = 25)

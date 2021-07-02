@@ -18,7 +18,7 @@ public class Carro {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotNull @NotEmpty @Length(max = 18, min = 18) 
+	@NotNull @NotEmpty @Length(max = 18, min = 18, message="Devem ser 18 caracteres em maiúsculos") 
 	private String chassi;
 	
 	@NotNull @NotEmpty
