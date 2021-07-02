@@ -1,6 +1,9 @@
 package com.compassouol.sprint3.controller.dto;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 
@@ -50,6 +53,11 @@ public class CarroDto {
 	//A partir do Java 8 -> Conversão de lista carros para CarroDto
 	public static Page<CarroDto> converter(Page<Carro> carros) {
 		return carros.map(CarroDto::new);
+	}
+
+	//Conversao no método de Query dinamica
+	public static List<CarroDto> converter(Collection<Carro> carros) {
+		return carros.stream().map(CarroDto::new).collect(Collectors.toList());
 	}
     
 }
