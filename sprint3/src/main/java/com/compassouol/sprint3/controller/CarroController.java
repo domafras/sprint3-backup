@@ -1,6 +1,9 @@
 package com.compassouol.sprint3.controller;
 
+import java.math.BigDecimal;
 import java.net.URI;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -8,6 +11,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
@@ -44,10 +48,8 @@ public class CarroController {
 		Carro carro = form.converter(carroRepository);
 		if (carro != null) {
 			carroRepository.save(carro);
-			
 			URI uri = uriBuilder.path("/api/cars/{id}").buildAndExpand(carro.getId()).toUri();
-			return ResponseEntity.created(uri).body(new CarroDto(carro));
-			
+			return ResponseEntity.created(uri).body(new CarroDto(carro));	
 		} else {
 			System.out.println("Chassi já cadastrado, este valor deve ser único.");
 			return null;
@@ -97,16 +99,52 @@ public class CarroController {
 	
 	// Ordenação e filtros
 	
-	@GetMapping("/cars")
-	public Page<CarroDto> listar(@RequestParam(required = false) String marca,
-								 @PageableDefault(sort = "nome", direction = Direction.ASC, page = 0, size = 15) Pageable paginacao) {
-		
-		if (marca == null) {
-			Page<Carro> carros = carroRepository.findAll(paginacao);
-			return CarroDto.converter(carros);
-		} else {
-			Page<Carro> carros = carroRepository.findByMarca(marca, paginacao);
-			return CarroDto.converter(carros);
-		}
+//	@GetMapping("/cars")
+//	public Page<CarroDto> listar(@RequestParam(required = false) String marca,
+//								 @RequestParam(required = false) String nome,
+//								 @RequestParam(required = false) String cor,
+//								 @RequestParam(required = false) Integer ano,
+//								 @PageableDefault(sort = "nome", direction = Direction.ASC, page = 0, size = 15) Pageable paginacao) {
+//		
+//		if (marca == null & nome == null & cor == null & ano == null) {
+//			Page<Carro> carros = carroRepository.findAll(paginacao);
+//			return CarroDto.converter(carros);
+//		} else if (marca != null) {
+//			Page<Carro> carros = carroRepository.findByMarca(marca, paginacao);
+//			return CarroDto.converter(carros);
+//		} else if (nome != null) {
+//			Page<Carro> carros = carroRepository.findByNome(nome, paginacao);
+//			return CarroDto.converter(carros);
+//		} else if (cor != null) {
+//			Page<Carro> carros = carroRepository.findByCor(cor, paginacao);
+//			return CarroDto.converter(carros);
+//		} else if (ano != null) {
+//			Page<Carro> carros = carroRepository.findByAno(ano, paginacao);
+//			return CarroDto.converter(carros);
+//		} else {
+//			return null;
+//		}
+//	}
+//
+//	@GetMapping("/cars/barato")
+//	public BigDecimal min() {
+//		return carroRepository.min();
+//	}
+//	
+//	@GetMapping("/cars/caro")
+//	public BigDecimal max() {
+//		return carroRepository.max();
+//	}
+	
+	///////////////////////////////////////////
+	
+	//Listar, ordenar e filtrar
+	//Paginação simples, com parâmetros, paginação default e query dinâmica
+	
+	@GetMapping(value = "/cars")
+	public List<CarroDto> paginacaoComParametrosEOrdenacao(CarroForm carroForm, @PageableDefault(direction = Direction.ASC, page = 0, size = 20) Pageable pageable) {
+		Collection<Carro> carros = (Collection<Carro>) carroRepository.findAll(carroForm.toSpec(), pageable).getContent();
+		return CarroDto.converter(carros);
 	}
+	
 }

@@ -1,19 +1,28 @@
 package com.compassouol.sprint3.controller.form;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.query.criteria.internal.predicate.IsEmptyPredicate;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.StringUtils;
 
 import com.compassouol.sprint3.model.Carro;
 import com.compassouol.sprint3.repository.CarroRepository;
 
 public class CarroForm {
 
-	@NotNull @NotEmpty @Length(max = 18, min = 18, message="Devem ser 18 caracteres em maiúsculos")
+	@NotBlank @Length(max = 18, min = 18, message="Devem ser 18 caracteres em maiúsculos")
 	private String chassi;
 	
 	@NotNull @NotEmpty @Length(max = 25)
@@ -75,5 +84,44 @@ public class CarroForm {
 		} else {
 			return null;
 		}
-	}	
+	}
+	
+//	public Specification<Carro> toSpec() {
+//		return (root, query, builder) -> {
+//			List<Predicate> predicados = new ArrayList<>();
+//			if(StringUtils.hasText(nome)) {
+//				Path<String> campoNome = root.<String>get("nome");
+//				Predicate predicadoNome = builder.like(campoNome, "%"+nome+"%");
+//				predicados.add(predicadoNome);
+//			}
+//			return builder.and(predicados.toArray(new Predicate[0]));
+//		};
+//	}
+	
+	public Specification<Carro> toSpec() {
+		return (root, query, builder) -> {
+			List<Predicate> predicados = new ArrayList<>();
+			if(nome != null) {
+				Path<String> campoNome = root.<String>get("nome");
+				Predicate predicadoNome = builder.like(campoNome, "%"+nome+"%");
+				predicados.add(predicadoNome);
+			} 
+			if(marca != null) {
+				Path<String> campoMarca = root.<String>get("marca");
+				Predicate predicadoMarca = builder.like(campoMarca, "%"+marca+"%");
+				predicados.add(predicadoMarca);
+			}
+			if(cor != null) {
+				Path<String> campoCor = root.<String>get("cor");
+				Predicate predicadoCor = builder.like(campoCor, "%"+cor+"%");
+				predicados.add(predicadoCor);
+			}
+		  //if(ano) != null) {
+			//	Path<Integer> campoAno = root.<Integer>get("ano");
+			//	Predicate predicadoAno = builder.equal(campoAno, "%"+ano+"%");
+			//	predicados.add(predicadoAno);
+			//}
+			return builder.and(predicados.toArray(new Predicate[0]));
+		};
+	}
 }
