@@ -9,20 +9,20 @@ public class DetalhesDoCarroDto {
 	private Long id;
 	private String chassi;
 	private String nome;
-    private String marca;
-    private String cor;
-    private BigDecimal valor;
-    private int ano;
-    
-    public DetalhesDoCarroDto(Carro carro) {
-    	this.id = carro.getId();
-    	this.chassi = carro.getChassi();
-    	this.nome = carro.getNome();
-    	this.marca = carro.getMarca();
-    	this.cor = carro.getCor();
-    	this.valor = carro.getValor();
-    	this.ano = carro.getAno();
-    }
+	private String marca;
+	private String cor;
+	private BigDecimal valor;
+	private int ano;
+
+	public DetalhesDoCarroDto(Carro carro) {
+		this.id = carro.getId();
+		this.chassi = carro.getChassi();
+		this.nome = carro.getNome();
+		this.marca = carro.getMarca();
+		this.cor = carro.getCor();
+		this.valor = carro.getValor();
+		this.ano = carro.getAno();
+	}
 
 	public Long getId() {
 		return id;
@@ -51,5 +51,5 @@ public class DetalhesDoCarroDto {
 	public int getAno() {
 		return ano;
 	}
-    
+
 }

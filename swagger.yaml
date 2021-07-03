@@ -1,0 +1,286 @@
+openapi: 3.0.1
+info:
+  title: API de carros
+  description: API capaz de listar, cadastrar, detalhar, atualizar valor (preço), deletar, filtrar e ordenar carros.
+  version: 0.0.1
+  contact:
+    name: Leonardo Mafra
+    email: leonardo.salin_BOLS@compasso.com.br
+  license:
+    name: "Licença: GPLv3"
+    url: https://www.gnu.org/licenses/gpl-3.0.html
+
+externalDocs:
+  description: Mais detalhes
+  url: https://github.com/domafras/sprint3-backup
+
+servers: 
+- url: http://localhost:8080/api
+  description: API de testes
+
+paths:
+
+
+  /cars:
+    
+    get:
+      summary: Lista carros
+      
+      parameters:
+      - name: nome
+        in: query
+        description: Filtro por nome
+        required: false
+        schema:
+          type: string
+      - name: marca
+        in: query
+        description: Filtro por marca
+        required: false
+        schema:
+          type: string
+      - name: cor
+        in: query
+        description: Filtro por cor
+        required: false
+        schema:
+          type: string
+      - name: ano
+        in: query
+        description: Filtro por ano
+        required: false
+        schema:
+          type: integer
+          
+      - name: sort
+        in: query
+        description: Ordenação
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum: [nome, marca, valor, cor, ano]
+
+      
+              
+      description: "Retorna lista de carros cadastrados"
+      responses:
+        200:
+          description: "Sucesso"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    chassi:
+                      type: string
+                    nome:
+                      type: string
+                    marca:
+                      type: string
+                    cor:
+                      type: string
+                    valor:
+                      type: number
+                    ano:
+                      type: integer
+    post:
+      summary: Cadastra carro
+      description: "Adiciona novo carro à lista de carros"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chassi:
+                  type: string
+                  pattern: '($^[A-Z0-9])'
+                  uniqueItems: true
+                nome:
+                  type: string
+                marca:
+                  type: string
+                cor:
+                  type: string
+                valor:
+                  type: number
+                ano:
+                  type: integer
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chassi:
+                    type: string
+                  nome:
+                    type: string
+                  marca:
+                    type: string
+                  cor:
+                    type: string
+                  valor:
+                    type: number
+                  ano:
+                    type: integer
+        200:
+          description: "Chassi já cadastrado."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  campo:
+                    type: string
+                  erro:
+                    type: string
+        400:
+          description: "Deve conter exatamente 18 caracteres"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  campo:
+                    type: string
+                  erro:
+                    type: string
+
+
+  /cars/{id}:
+    parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+    get:
+      summary: Detalha carro
+      description: "Retorna informações do carro detalhado por ID"
+      responses:
+        200:
+          description: "Sucesso"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  chassi:
+                    type: string
+                  nome:
+                    type: string
+                  marca:
+                    type: string
+                  cor:
+                    type: string
+                  valor:                      
+                    type: number
+                  ano:
+                    type: integer
+        404:
+          description: Carro não encontrado
+          content:
+            application/json:
+              example: "Not Found"
+    put:
+      summary: Atualiza valor do carro
+      description: "Altera o atributo valor de carro especificado pelo ID"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                valor:
+                  type: number
+      responses:
+        200:
+          description: "Sucesso"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  chassi:
+                    type: string
+                  nome:
+                    type: string
+                  marca:
+                    type: string
+                  cor:
+                    type: string
+                  valor:                      
+                    type: number
+                  ano:
+                    type: integer
+        404:
+          description: Carro não encontrado
+          content:
+            application/json:
+              example: "Not Found"
+    delete:
+      summary: Deleta carro
+      description: "Exclui informações do carro detalhado por ID"
+      responses:
+        200:
+          description: "Sucesso"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  chassi:
+                    type: string
+                  nome:
+                    type: string
+                  marca:
+                    type: string
+                  cor:
+                    type: string
+                  valor:                      
+                    type: number
+                  ano:
+                    type: integer
+        404:
+          description: Carro não encontrado
+          content:
+            application/json:
+              example: "Not Found"
+
+
+components:
+  schemas:
+    Carro:
+      type: object
+      properties:
+        id:
+          type: integer
+        chassi:
+          type: string
+          minLength: 18
+          maxLength: 18
+          pattern: '($^[A-Z0-9])'
+        nome:
+          type: string
+        marca:
+          type: string
+        cor:
+          type: string
+        valor:
+          type: number
+          format: decimal
+        ano:
+          type: integer
