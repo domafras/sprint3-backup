@@ -9,7 +9,7 @@ import com.compassouol.sprint3.repository.CarroRepository;
 
 public class AtualizacaoCarroForm {
 
-	@NotNull 
+	@NotNull
 	private BigDecimal valor;
 
 	public BigDecimal getValor() {
@@ -22,10 +22,10 @@ public class AtualizacaoCarroForm {
 
 	public Carro atualizar(Long id, CarroRepository carroRepository) {
 		Carro carro = carroRepository.getOne(id);
-		
+
 		carro.setValor(this.valor);
-		
+
 		return carro;
 	}
-	
+
 }

@@ -40,7 +40,7 @@ public class CarroForm {
 	private String cor;
 
 	@NotNull
-	@Digits(integer = 6, fraction = 2, message = "Apenas milhar e 2 casas após o ponto.")
+	@Digits(integer = 6, fraction = 2, message = "Apenas milhar, com 2 casas após o ponto.")
 	private BigDecimal valor;
 
 	@NotNull
@@ -103,7 +103,6 @@ public class CarroForm {
 			return null;
 		}
 	}
-
 
 	// Utilizando Specification para criar querys dinâmicas
 	public Specification<Carro> toSpec() {
