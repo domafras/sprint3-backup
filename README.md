@@ -99,10 +99,12 @@ Para Windows:
 chrome.exe --user-data-dir="C://Chrome dev session" --disable-web-security
 ```
 Fonte: [Stack Overflow](https://stackoverflow.com/questions/3102819/disable-same-origin-policy-in-chrome)
+
 *No meu caso, o problema persistia em vários navegadores e foi solucionado assim.
+
 ** Utilizar esta instância de navegador somente para essa função
 
-Ao acessar o editor.swagger.io (com --disable-web-security):
+Ao acessar o [Swagger Editor](editor.swagger.io) (com --disable-web-security):
 ```bash
 Na parte superior:
     1. File
